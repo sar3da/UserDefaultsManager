@@ -7,6 +7,7 @@ class UserDManager {
         case language
         case userLogin
         case onBoarding
+        case userName
         case userEmail
     }
     
