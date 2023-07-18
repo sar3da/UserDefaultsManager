@@ -12,8 +12,11 @@ enum UserDefaultsKeys: String, CaseIterable {
     case locationCode = "location_code"
     // no need to purge
     case merchantID
+    case level
     case lastUpdateNotification
     case theme = "Theme"
+    case name = "name"
+    case progress = "pr_level"
     case arrayString = "arrayS"
     case arrayInt = "arrayI"
     case dictionary = "Dictionary"
@@ -33,7 +36,7 @@ enum UserDefaultsKeys: String, CaseIterable {
 
 class UserDManager {
     
-    
+    static let shared = UserDManager()
     public var storage: UserDefaults
     
     public init(storage: UserDefaults = UserDefaults.standard) {
@@ -68,6 +71,14 @@ class UserDManager {
     
     public func getBool(for key: UserDefaultsKeys) -> Bool {
         storage.bool(forKey: key.rawValue)
+    }
+
+    public func getDouble(for key: UserDefaultsKeys) -> Double {
+        storage.double(forKey: key.rawValue)
+    }
+    
+    public func getFloat(for key: UserDefaultsKeys) -> Float {
+        storage.float(forKey: key.rawValue)
     }
     
     public func getArray<T>(for key: UserDefaultsKeys) -> [T] {
@@ -108,15 +119,17 @@ class UserDManager {
     public func hasValue(key: UserDefaultsKeys) -> Bool {
         return storage.value(forKey: key.rawValue) != nil
     }
+
+    
     //MARK: Remove
     
-    // remove key stored values
+    // remove for one key
     public func removeForKey(_ key: UserDefaultsKeys) {
         storage.removeObject(forKey: key.rawValue)
         storage.synchronize()
     }
     
-    // remove all stored values
+    // remove all data
     public func removeAll() {
         let keys = UserDefaultsKeys.allCases
         keys.forEach {
@@ -136,13 +149,14 @@ class UserDManager {
         }
     }
     
-    //removeAllExcept(for: keysToKeep)
+    // remove All This keys
     public func removeAllThis(for keys: [UserDefaultsKeys]) {
         keys.forEach {
             removeForKey($0)
         }
     }
     
+    // remove All Keys, Except and Keep This keys
     public func removeAllExcept(for keysToKeep: [UserDefaultsKeys]) {
         let allKeys = UserDefaultsKeys.allCases
         
